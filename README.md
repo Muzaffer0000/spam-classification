@@ -32,6 +32,8 @@ Veri, sınıf oranları korunarak eğitim ve test parçalarına ayrılır. Model
 
 Notebook veriyi UCI'dan indirir; data klasörüne ayrıca dosya koymak gerekmez. İlk hücre, veri indirme paketini kurar.
 
-## Sonuçlar
+## İlk ölçüm sonucu
 
-Notebook bu depodan henüz çalıştırılmadı. Rapor taslağındaki sonuç alanları, notebook çalıştırıldıktan sonra gerçek çıktılarla doldurulmalıdır.
+Açıklamalı notebook kodu 80/20 stratified eğitim/test ayrımı ve random_state=42 ile çalıştırıldı. Bu çalıştırmada en yüksek F1 Random Forest'ta çıktı. En iyi modelin sonuçları: accuracy %94,57, spam precision %95,10, spam recall %90,91 ve spam F1 %92,96. Test kümesinde 17 normal e-posta yanlışlıkla spam, 33 spam e-posta ise normal tahmin edildi.
+
+Bu bir veri bölünmesine ait ölçümdür; başka veri setlerinde veya farklı koşullarda sonuç değişebilir. Ayrıntılı model tablosu ve hata yorumu report_template.md dosyasındadır.
