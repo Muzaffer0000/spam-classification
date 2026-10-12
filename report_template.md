@@ -1,73 +1,75 @@
-# E-posta Spam Sınıflandırma — Rapor Taslağı
-
-> Köşeli parantezli sonuç alanlarını notebook'u çalıştırdıktan sonra gerçek değerlerle doldur. Sonuçları önceden tahmin etme.
+# Spam ve Normal E-posta Sınıflandırması — Proje Raporu
 
 ## 1. Amaç
 
-Bu çalışmanın amacı, etiketli e-posta örneklerinden bir e-postanın spam mı yoksa normal (ham) mı olduğunu tahmin etmek ve makine öğrenmesi algoritmalarını aynı test verisinde karşılaştırmaktır.
+Bu çalışmada amaç, etiketli e-posta örneklerini **normal (ham)** ve **spam** olarak sınıflandırmaktır. Aynı eğitim ve test verisi üzerinde dört makine öğrenmesi algoritması eğitilmiş, performans ölçütleri karşılaştırılmış ve en iyi sonuç veren model seçilmiştir.
 
 ## 2. Veri seti
 
-- Kaynak: [UCI Spambase](https://archive.ics.uci.edu/dataset/94/spambase)
-- Örnek sayısı: 4.601 e-posta
-- Girdi: 57 sayısal özellik
-- Hedef: 0 = normal, 1 = spam
-- Not: Veri seti ham e-posta metnini değil, e-postalardan çıkarılmış sayısal özellikleri içerir.
+- **Kaynak:** [UCI Machine Learning Repository — Spambase](https://archive.ics.uci.edu/dataset/94/spambase)
+- **Örnek sayısı:** 4.601
+- **Girdi özellikleri:** 57 sayısal özellik
+- **Hedef etiketi:** 0 = normal, 1 = spam
+- **Sınıf dağılımı:** 2.788 normal, 1.813 spam
 
-## 3. Uygulanan yöntem
+**Veri seti sınırlaması:** Spambase, e-postaların ham metin gövdelerini değil, e-postalardan önceden çıkarılmış sayısal özellikleri içerir. Bu nedenle çalışma, ham metin üzerinde sözcük temizleme veya metin vektörleştirme yapmaz; hazır özelliklerden spam sınıflandırması yapar.
 
-Veri, sınıf dağılımı korunarak yüzde 80 eğitim ve yüzde 20 test olarak ayrıldı. Eğitim verisi modelleri öğretmek, test verisi ise daha önce görülmemiş örneklerde başarıyı değerlendirmek için kullanıldı. Tekrarlanabilirlik için rastgelelik tohumu 42 olarak ayarlandı.
+## 3. Uygulama yöntemi
 
-Karşılaştırılan algoritmalar:
-- Gaussian Naive Bayes
-- Lojistik Regresyon
-- Destek Vektör Makinesi (RBF)
-- Random Forest
+Veri, sınıf oranları korunarak eğitim ve test kümelerine ayrılmıştır. Verinin yüzde 80'i (3.680 örnek) modelleri eğitmek, yüzde 20'si (921 örnek) daha önce görülmemiş örneklerde değerlendirmek için kullanılmıştır. Sonuçların tekrarlanabilmesi için **random_state=42** kullanılmıştır.
 
-## 4. Confusion matrix açıklaması
+Lojistik Regresyon ve Destek Vektör Makinesi öncesinde özellikler ölçeklenmiştir. Ölçekleme, eğitim ve test verisinin birbirine karışmaması için modellerin işlem hattı içinde uygulanmıştır. Dört model de aynı veri bölünmesinde değerlendirilmiştir.
 
-Confusion matrix, gerçek sınıf ile model tahminini karşılaştırır. Sınıf sırası normal, sonra spam olduğunda:
+## 4. Karşılaştırılan algoritmalar
 
-| Gerçek / Tahmin | Normal tahmini | Spam tahmini |
-|---|---:|---:|
-| Gerçek normal | TN | FP |
-| Gerçek spam | FN | TP |
+1. **Gaussian Naive Bayes:** Özellikler arasındaki bağımsızlık varsayımını kullanarak sınıf olasılıklarını hesaplar.
+2. **Lojistik Regresyon:** Özelliklerden sınıf olasılığını öğrenen doğrusal bir sınıflandırıcıdır.
+3. **Destek Vektör Makinesi (RBF):** Sınıflar arasındaki ayrımı bulur; RBF çekirdeği doğrusal olmayan sınırlar öğrenmesine yardımcı olur.
+4. **Random Forest:** Farklı örnek ve özelliklerle eğitilen çok sayıda karar ağacının tahminlerini birleştirir.
 
-- FP: Normal e-posta yanlışlıkla spam sayılır.
-- FN: Spam e-posta normal sanılır.
-- TP: Spam doğru yakalanır.
-- TN: Normal e-posta doğru tanınır.
+## 5. Değerlendirme ölçütleri
 
-## 5. Sonuçlar
+Spam sınıfı pozitif sınıf (1) olarak kabul edilmiştir.
 
-Notebook'tan gelen değerleri aktar:
+- **Accuracy (doğruluk):** Tüm test e-postalarının ne kadarının doğru sınıflandırıldığını gösterir.
+- **Precision (spam kesinliği):** Modelin spam dediği e-postaların ne kadarının gerçekten spam olduğunu gösterir.
+- **Recall (spam yakalama oranı):** Gerçek spam e-postaların ne kadarının yakalandığını gösterir.
+- **F1 skoru:** Precision ve recall değerlerini birlikte özetler. Modelleri seçerken spam sınıfının F1 skoru esas alınmıştır.
+- **Confusion matrix (karmaşıklık matrisi):** Gerçek sınıflarla model tahminlerini çaprazlayan tablodur. Satırlar gerçek sınıfı, sütunlar tahmini gösterir.
+
+## 6. Model karşılaştırma sonuçları
 
 | Model | Accuracy | Precision (spam) | Recall (spam) | F1 (spam) |
 |---|---:|---:|---:|---:|
 | Gaussian Naive Bayes | 83,39% | 71,78% | 95,32% | 81,89% |
 | Lojistik Regresyon | 92,94% | 92,09% | 89,81% | 90,93% |
-| Destek Vektör Makinesi | 92,73% | 92,77% | 88,43% | 90,55% |
-| Random Forest | 94,57% | 95,10% | 90,91% | 92,96% |
+| Destek Vektör Makinesi (RBF) | 92,73% | 92,77% | 88,43% | 90,55% |
+| **Random Forest** | **94,57%** | **95,10%** | **90,91%** | **92,96%** |
 
-**En yüksek F1 değerini veren model:** Random Forest (92,96%)
+Bu veri bölünmesinde en yüksek spam F1 skoru Random Forest modelinde elde edilmiştir. Random Forest ayrıca en yüksek accuracy ve spam precision değerlerini vermiştir. Naive Bayes spam'lerin daha büyük bölümünü yakalamıştır (recall %95,32), ancak spam precision değeri daha düşük olduğu için daha fazla normal e-postayı yanlışlıkla spam olarak işaretlemiştir.
 
-**Seçim gerekçesi:** Bu çalıştırmada Random Forest en yüksek accuracy ve F1 değerlerini verdi. Spam tahminlerinde precision değeri %95,10 olduğundan spam dediği e-postaların çoğu gerçekten spamdi; recall değeri %90,91 olduğundan test kümesindeki spam'lerin çoğunu yakaladı. Naive Bayes daha yüksek recall (%95,32) verdi, ancak spam precision değeri daha düşüktü (%71,78), yani daha fazla normal e-postayı spam diye işaretledi.
+## 7. En iyi modelin confusion matrix'i
 
-## 6. Hata analizi
-
-Random Forest confusion matrix'i, sınıf sırası [normal, spam] ve satırlar gerçek/sütunlar tahmin olacak şekilde:
+Sınıf sırası **normal, spam**; satırlar gerçek, sütunlar tahmin olacak şekildedir:
 
 | Gerçek / Tahmin | Tahmin normal | Tahmin spam |
 |---|---:|---:|
 | Gerçek normal | 541 (TN) | 17 (FP) |
 | Gerçek spam | 33 (FN) | 330 (TP) |
 
-Model 558 normal e-postanın 541'ini doğru bıraktı; 17'sine yanlış spam alarmı verdi. 363 spam e-postanın 330'unu yakaladı, 33'ünü kaçırdı. FP normal bir iletinin spam klasörüne düşmesi; FN spam'in gelen kutusunda kalması anlamına gelir.
+- **TN = 541:** Normal e-postalar doğru biçimde normal sınıflandırılmıştır.
+- **FP = 17:** Normal e-postalar yanlışlıkla spam olarak işaretlenmiştir.
+- **FN = 33:** Spam e-postalar normal olarak tahmin edilmiş, yani kaçırılmıştır.
+- **TP = 330:** Spam e-postalar doğru biçimde yakalanmıştır.
 
-## 7. Sonuç ve sınırlamalar
+Model, 921 test örneğinin 871'ini doğru sınıflandırmıştır: (541 + 330) / 921 = %94,57 doğruluk.
 
-Bu deneyde Random Forest, test kümesinde en yüksek F1 (%92,96) ve accuracy (%94,57) değerlerini verdi. 17 yanlış spam alarmı ve 33 kaçırılan spam üretti. Bu sonuç, UCI Spambase veri setindeki seçilen stratified eğitim/test ayrımı için geçerlidir. Veri seti ham e-posta metnini içermez; bu nedenle sonuçlar gerçek zamanlı gelen kutularına doğrudan genellenemez. Başka e-posta koleksiyonlarında başarı farklı olabilir.
+## 8. Sonuç ve sınırlamalar
+
+Bu deneyde dört algoritma aynı eğitim/test ayrımında karşılaştırılmış; spam F1 skoru ve accuracy bakımından en iyi sonuç Random Forest ile elde edilmiştir. Seçilen model test kümesinde 17 yanlış spam alarmı ve 33 kaçırılan spam üretmiştir. Bu sayılar, yalnızca kullanılan Spambase veri seti ve sabit eğitim/test bölünmesi için geçerlidir; başka veri kümelerinde sonuçlar değişebilir.
+
+Çalışmanın önemli sınırlaması, veri setinin ham e-posta metnini değil önceden çıkarılmış sayısal özellikleri içermesidir. Ayrıca sonuçlar tek bir eğitim/test bölünmesine dayanmaktadır; farklı e-posta kaynaklarına doğrudan genellenmemelidir.
 
 ## Kaynakça
 
-Hopkins, M., Reeber, E., Forman, G., & Suermondt, J. (1999). Spambase. UCI Machine Learning Repository. https://doi.org/10.24432/C53G6X
+Hopkins, M., Reeber, E., Forman, G., & Suermondt, J. (1999). *Spambase*. UCI Machine Learning Repository. https://doi.org/10.24432/C53G6X
