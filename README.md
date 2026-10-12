@@ -1,39 +1,52 @@
 # E-posta Spam Sınıflandırma
 
-Bu proje, etiketli e-postaları normal (ham) ve spam olarak sınıflandıran makine öğrenmesi algoritmalarını karşılaştırır. Python ve scikit-learn kullanılır; çalışma Google Colab'da yürütülebilir.
+Bu proje, e-postaları **normal (ham)** ve **spam** olarak sınıflandırmak için dört makine öğrenmesi algoritmasını karşılaştırır. Kod Python ve scikit-learn kullanır; Google Colab'da çalıştırılabilir.
 
 ## Proje dosyaları
 
-- notebooks/spam_classification.ipynb: Veriyi yükleyen, dört modeli eğiten ve sonuçlarını karşılaştıran açıklamalı notebook.
-- requirements.txt: Gerekli Python paketleri.
-- report_template.md: Gerçek sonuçlar alındıktan sonra doldurulacak rapor taslağı.
+- [Açıklamalı Jupyter notebook](notebooks/spam_classification.ipynb): Veri setini yükler, dört modeli eğitir, metrikleri ve confusion matrix'leri üretir.
+- [Proje raporu](REPORT.md): Yöntemi, model karşılaştırmasını, en iyi modeli, hata analizini ve veri seti sınırlamasını açıklar.
+- [Bağımlılıklar](requirements.txt): Gerekli Python paketleri.
 
 ## Veri seti
 
-UCI Spambase veri seti 4.601 e-posta örneği içerir. Etiket 0 ise normal, 1 ise spam'dir. Girdi sütunları e-postaların ham metni değil, e-postalardan önceden çıkarılmış sayısal özelliklerdir. Bu proje metin temizleme yerine sınıflandırma ve model değerlendirmeye odaklanır.
+UCI Spambase veri setinde 4.601 e-posta örneği ve 57 sayısal özellik bulunur. Etiket 0 normal, 1 spam anlamına gelir. Veri seti ham e-posta metinlerini değil, e-postalardan önceden çıkarılmış sayısal özellikleri içerir. Bu nedenle çalışma ham metin temizleme veya kelime vektörleştirme yapmaz.
 
-Kaynak: [UCI Machine Learning Repository — Spambase](https://archive.ics.uci.edu/dataset/94/spambase). Lisans: CC BY 4.0. Kaynak gösterimi: Hopkins, M., Reeber, E., Forman, G., & Suermondt, J. (1999). Spambase. UCI Machine Learning Repository. https://doi.org/10.24432/C53G6X
+Kaynak: [UCI Machine Learning Repository — Spambase](https://archive.ics.uci.edu/dataset/94/spambase). Lisans: CC BY 4.0. Kaynak gösterimi: Hopkins, M., Reeber, E., Forman, G., & Suermondt, J. (1999). *Spambase*. https://doi.org/10.24432/C53G6X
 
-## Algoritmalar
+## Yöntem
+
+Veri, normal ve spam oranları korunarak yüzde 80 eğitim ve yüzde 20 test olarak ayrılır. Dört algoritma aynı bölünmede değerlendirilir:
 
 1. Gaussian Naive Bayes
 2. Lojistik Regresyon
-3. Destek Vektör Makinesi (RBF çekirdeği)
+3. Destek Vektör Makinesi (RBF)
 4. Random Forest
 
-Veri, sınıf oranları korunarak eğitim ve test parçalarına ayrılır. Modeller aynı test verisinde accuracy, precision, recall ve F1 ile karşılaştırılır. Notebook her model için confusion matrix de üretir. En yüksek F1 değeri karşılaştırma ölçütü olarak kullanılır; raporda yanlış spam alarmı (FP) ve kaçırılan spam (FN) ayrıca açıklanır.
+Modeller accuracy, spam precision, spam recall ve spam F1 ile karşılaştırılır. Confusion matrix, doğru tahminlerin yanı sıra normal bir e-postaya yanlış spam alarmı verilmesini (FP) ve spam'in kaçırılmasını (FN) gösterir. En yüksek spam F1 değerine göre bu deneyde Random Forest seçilmiştir.
+
+## Bu çalıştırmanın sonuçları
+
+| Model | Accuracy | Precision (spam) | Recall (spam) | F1 (spam) |
+|---|---:|---:|---:|---:|
+| Gaussian Naive Bayes | 83,39% | 71,78% | 95,32% | 81,89% |
+| Lojistik Regresyon | 92,94% | 92,09% | 89,81% | 90,93% |
+| Destek Vektör Makinesi (RBF) | 92,73% | 92,77% | 88,43% | 90,55% |
+| **Random Forest** | **94,57%** | **95,10%** | **90,91%** | **92,96%** |
+
+Random Forest confusion matrix'i (satırlar gerçek, sütunlar tahmin; sıra normal, spam):
+
+| Gerçek / Tahmin | Tahmin normal | Tahmin spam |
+|---|---:|---:|
+| Gerçek normal | 541 | 17 |
+| Gerçek spam | 33 | 330 |
+
+Bu sonuçlar 80/20 stratified tek bir eğitim/test bölünmesine ve random_state=42 değerine aittir; başka veri kümelerinde sonuçlar değişebilir. Ayrıntılı yorum için [proje raporuna](REPORT.md) bakın.
 
 ## Çalıştırma
 
-1. Notebook'u Google Colab'da aç.
-2. Hücreleri yukarıdan aşağıya sırayla çalıştır.
-3. Gerçek sonuç tablosu ve confusion matrix grafiklerini gözden geçir.
-4. Ölçüm sonuçlarını report_template.md dosyasına aktar.
+1. [Notebook'u](notebooks/spam_classification.ipynb) Colab'a yükleyin veya Python/Jupyter ortamında açın.
+2. Hücreleri yukarıdan aşağıya çalıştırın.
+3. Karşılaştırma tablosu ve confusion matrix çıktılarını inceleyin.
 
-Notebook veriyi UCI'dan indirir; data klasörüne ayrıca dosya koymak gerekmez. İlk hücre, veri indirme paketini kurar.
-
-## İlk ölçüm sonucu
-
-Açıklamalı notebook kodu 80/20 stratified eğitim/test ayrımı ve random_state=42 ile çalıştırıldı. Bu çalıştırmada en yüksek F1 Random Forest'ta çıktı. En iyi modelin sonuçları: accuracy %94,57, spam precision %95,10, spam recall %90,91 ve spam F1 %92,96. Test kümesinde 17 normal e-posta yanlışlıkla spam, 33 spam e-posta ise normal tahmin edildi.
-
-Bu bir veri bölünmesine ait ölçümdür; başka veri setlerinde veya farklı koşullarda sonuç değişebilir. Ayrıntılı model tablosu ve hata yorumu report_template.md dosyasındadır.
+Notebook veri setini UCI'dan indirir; projeye ayrıca veri dosyası eklemek gerekmez.
