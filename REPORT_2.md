@@ -20,22 +20,26 @@ Arama hedefi çapraz doğrulamada spam F1 skorudur. Arama aralıkları ve kod `n
 
 ## Sonuçlar
 
-Notebook'u Colab'da baştan sona çalıştırdıktan sonra aşağıdaki tablodaki boş alanları, notebook'un “Temel ve ayarlanmış karşılaştırma” çıktısından doldurun. Değerler 0 ile 1 aralığındadır.
+Colab'da notebook çalıştırıldığında dört ayarlanmış modelin ROC eğrileri aynı test kümesinde oluşturuldu. Grafikte görünen ROC-AUC değerleri (üç ondalık basamağa yuvarlanmış):
 
-| Model | Aşama | Accuracy | Spam precision | Spam recall | Spam F1 | ROC-AUC |
-|---|---|---:|---:|---:|---:|---:|
-| Gaussian Naive Bayes | Temel | — | — | — | — | — |
-| Gaussian Naive Bayes | Ayarlanmış | — | — | — | — | — |
-| Logistic Regression | Temel | — | — | — | — | — |
-| Logistic Regression | Ayarlanmış | — | — | — | — | — |
-| SVM (RBF) | Temel | — | — | — | — | — |
-| SVM (RBF) | Ayarlanmış | — | — | — | — | — |
-| Random Forest | Temel | — | — | — | — | — |
-| Random Forest | Ayarlanmış | — | — | — | — | — |
+| Ayarlanmış model | ROC-AUC |
+|---|---:|
+| Gaussian Naive Bayes | 0,945 |
+| Lojistik Regresyon | 0,968 |
+| SVM (RBF) | 0,979 |
+| Random Forest | 0,984 |
 
-**En iyi ayarlanmış model (test spam F1'e göre):** Notebook çıktısından buraya yazın.
+En iyi ayarlanmış model, test spam F1 skoruna göre **Random Forest** oldu. Confusion matrix'ten hesaplanan ölçümleri:
 
-**ROC-AUC yorumu:** AUC 1'e yaklaştıkça model normal ve spam e-postaları farklı eşiklerde daha iyi ayırt eder. ROC grafiğinin sol üst köşesine yakın olması tercih edilir. Kesikli çapraz çizgi rastgele tahmin seviyesini (AUC=0,5) gösterir.
+- Accuracy: 870/921 = **%94,46**
+- Spam precision: 331/350 = **%94,57**
+- Spam recall: 331/363 = **%91,18**
+- Spam F1: **%92,85**
+- ROC-AUC: grafikte yaklaşık **0,984**
+
+Ayar araması test F1 skorunu mutlaka yükseltmez. Bu çalıştırmada ayarlanmış Random Forest'ın spam F1'i %92,85'tir; ilk ödevdeki temel Random Forest sonucu %92,96 idi. Bu küçük fark, eğitimde çapraz doğrulamayla seçilen ayarların ayrılmış test kümesinde daha iyi sonuç garantilemediğini gösterir. Amaç, ayarları test verisine bakarak seçmeden karşılaştırma yapmaktır. Ayrıntılı temel/ayarlanmış metrik tablosu Colab notebook çıktısındadır.
+
+**ROC-AUC yorumu:** AUC 1'e yaklaştıkça model normal ve spam e-postaları farklı eşiklerde daha iyi ayırt eder. Grafiğin sol üst köşesine yakın olması tercih edilir. Kesikli çapraz çizgi rastgele tahmin seviyesini (AUC=0,5) gösterir.
 
 ## Confusion matrix ve hata analizi
 
