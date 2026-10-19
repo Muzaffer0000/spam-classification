@@ -6,6 +6,8 @@ Bu proje, e-postaları **normal (ham)** ve **spam** olarak sınıflandırmak iç
 
 - [Açıklamalı Jupyter notebook](notebooks/spam_classification.ipynb): Veri setini yükler, dört modeli eğitir, metrikleri ve confusion matrix'leri üretir.
 - [Proje raporu](REPORT.md): Yöntemi, model karşılaştırmasını, en iyi modeli, hata analizini ve veri seti sınırlamasını açıklar.
+- [İkinci ödev notebook'u](notebooks/model_iyilestirme_roc.ipynb): Parametre araması, temel/ayarlanmış model karşılaştırması, ROC eğrileri ve ROC-AUC.
+- [İkinci ödev raporu](REPORT_2.md): Model iyileştirme ve ROC analiz raporu.
 - [Bağımlılıklar](requirements.txt): Gerekli Python paketleri.
 
 ## Veri seti
